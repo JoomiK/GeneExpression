@@ -114,7 +114,7 @@ head( counts( cds, normalized=TRUE ) )
 ## FBgn0000018  280.610404  306.74508  292.43434  276.3350930
 ```
 
-With DESeq, differential gene expression is approximated by a negative binomial distribution. Estimating the dispersion parameter:
+With DESeq, differential gene expression is approximated by a negative binomial distribution, for which we need the dispersion parameter. Estimating the dispersion parameter:
 
 ```r
 cds = estimateDispersions( cds )
@@ -125,8 +125,8 @@ Plotting dispersion estimates. The level of dispersion is related to the biologi
 ```r
 plotDispEsts( cds )
 ```
+![dispersion](https://cloud.githubusercontent.com/assets/16356757/16339197/621b3992-39ef-11e6-89ec-b6eb35f46abe.png)
 
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 See whether there is differential expression between untreated and treated. 
 Output is a data.frame. Also get nominal p-val and FDR vals.
@@ -184,7 +184,7 @@ plotMA(res, col = ifelse(res$padj >=0.01, "black", "violet"))
 abline(h=c(-1:1), col="red")
 ```
 
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![logfoldchange](https://cloud.githubusercontent.com/assets/16356757/16339290/ca4949be-39ef-11e6-8555-36d66d03dea5.png)
 
 Select gene names based on FDR (1%)
 
@@ -210,11 +210,6 @@ Estimating dispersions
 cdsFull = estimateDispersions( cdsFull )
 ```
 
-```r
-plotDispEsts( cdsFull )
-```
-
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
 
 Variance stabilizing transformation, which will be useful for certain applications:
 
@@ -234,7 +229,7 @@ hmcol = colorRampPalette(brewer.pal(9, "GnBu"))(100)
 heatmap.2(exprs(vsdFull)[select,], col = hmcol, trace="none", margin=c(10, 6))
 ```
 
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+![heatmap-count-table](https://cloud.githubusercontent.com/assets/16356757/16339200/64d3e242-39ef-11e6-99fd-1454a738a589.png)
 
 Sample clustering:
 
@@ -246,7 +241,7 @@ rownames(mat) = colnames(mat) = with(pData(cdsFullBlind), paste(condition, libTy
 heatmap.2(mat, trace="none", col = rev(hmcol), margin=c(13, 13))
 ```
 
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![Clustering](https://cloud.githubusercontent.com/assets/16356757/16339205/667839f4-39ef-11e6-9f9d-7f8e5ae4a839.png)
 
 PCA plot of the samples:
 
@@ -254,6 +249,6 @@ PCA plot of the samples:
 print(plotPCA(vsdFull, intgroup=c("condition", "libType")))
 ```
 
-![](RNASeq_with_DNASeq_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![PCA](https://cloud.githubusercontent.com/assets/16356757/16339207/6839d2ca-39ef-11e6-8b66-dfccffb7c2be.png)
 
 
