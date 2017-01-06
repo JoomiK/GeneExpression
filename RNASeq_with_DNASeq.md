@@ -1,11 +1,11 @@
-## RNASeq Analysis with DNASeq
+## RNASeq Analysis in R
 
 
 
 This document contains instructions for differential expression of RNA-Seq (gene expression) data, starting with raw counts of sequencing reads.
 
 #### The Pasilla dataset
-The dataset used will be the Pasilla dataset, available from the Pasilla Bioconductor library. It contains RNA-Seq count data for RNAi treated and untreated *Drosophila melanogaster* cells.
+It contains RNA-Seq count data for RNAi treated and untreated *Drosophila melanogaster* cells.
 
 Install `gplots`, `RColorBrewer` and Bioconductor packages `DESeq` and `pasilla` if needed.
 
