@@ -1,8 +1,6 @@
 ## RNASeq Analysis in R
 
-
-
-This document contains instructions for differential expression of RNA-Seq (gene expression) data, starting with raw counts of sequencing reads.
+This document goes through the workflow for differential expression of RNA-Seq (gene expression) data, starting with raw counts of sequencing reads.
 
 #### The Pasilla dataset
 It contains RNA-Seq count data for RNAi treated and untreated *Drosophila melanogaster* cells.
@@ -54,9 +52,9 @@ Metadata- Columns will be condition or libType. Rows correspond to the 7 (untrea
 
 ```r
 pasillaDesign = data.frame(
-  row.names = colnames( count.table ), 
+  row.names = colnames( count.table ),
   condition = c( "untreated", "untreated", "untreated",
-                 "untreated", "treated", "treated", "treated" ), 
+                 "untreated", "treated", "treated", "treated" ),
   libType = c( "single-end", "single-end", "paired-end",
                "paired-end", "single-end", "paired-end", "paired-end" ) )
 ```
@@ -94,7 +92,7 @@ sizeFactors( cds )
 ```
 
 ```
-## untreated3 untreated4   treated2   treated3 
+## untreated3 untreated4   treated2   treated3
 ##  0.8730966  1.0106112  1.0224517  1.1145888
 ```
 
@@ -128,8 +126,11 @@ plotDispEsts( cds )
 ![dispersion](https://cloud.githubusercontent.com/assets/16356757/16339197/621b3992-39ef-11e6-89ec-b6eb35f46abe.png)
 
 
-See whether there is differential expression between untreated and treated. 
-Output is a data.frame. Also get nominal p-val and FDR vals.
+See whether there is differential expression between untreated and treated.
+We need to correct for the fact that we are doing multiple comparison tests. In the case of gene expression data, it's typical to control for the FDR by using methods like Benjamini-Hochberg, instead of  the Bonferroni correction, which is too conservative and generally would lead to a lot of false negatives.
+
+Output is a data.frame.
+
 
 ```r
 res = nbinomTest( cds, "untreated", "treated" )
@@ -152,8 +153,8 @@ head(res)
 ## 5    -0.26383857 0.2414208 0.8811746
 ## 6    -0.04638999 0.7572819 1.0000000
 ```
-
-To order by p-valuess (decreasing):
+padj is the adjusted p-value (controlled for DFR)
+To order by pad-j (decreasing):
 
 ```r
 res <- res[order(res$padj),]
@@ -243,6 +244,7 @@ heatmap.2(mat, trace="none", col = rev(hmcol), margin=c(13, 13))
 
 ![Clustering](https://cloud.githubusercontent.com/assets/16356757/16339205/667839f4-39ef-11e6-9f9d-7f8e5ae4a839.png)
 
+In the case of gene expression data, it's important to verify that the first principal component is your condition- in this case, treated and untreated (and not technical method of sequencing, like paired or single end reads).
 PCA plot of the samples:
 
 ```r
@@ -250,5 +252,3 @@ print(plotPCA(vsdFull, intgroup=c("condition", "libType")))
 ```
 
 ![PCA](https://cloud.githubusercontent.com/assets/16356757/16339207/6839d2ca-39ef-11e6-8b66-dfccffb7c2be.png)
-
-
