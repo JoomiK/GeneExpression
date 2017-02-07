@@ -6,18 +6,16 @@
 
 datafile <- system.file( "extdata/pasilla_gene_counts.tsv", package="pasilla" )
 
-#Load file using read.table: creates a data frame from it. Store as count.table. Header = TRUE if 
-#the first row of your file contains the names of variables.
+#Load file using read.table: creates a data frame from it. 
 
 count.table <- read.table(datafile, header=TRUE, row.names=1)
 
-#See the first few rows of data.
 head(count.table)
 
 #Optional: delete any genes that were never detected (equal to zero in all conditions).
 #count.table <- count.table[rowSums(count.table) > 0,]
 
-#Metadata. Columns will be condition or libType. Rows correspond to the 7 (untreated or treated) samples.
+#Metadata. 
 pasillaDesign = data.frame(
   row.names = colnames( count.table ), 
   condition = c( "untreated", "untreated", "untreated",
@@ -25,9 +23,7 @@ pasillaDesign = data.frame(
   libType = c( "single-end", "single-end", "paired-end",
                "paired-end", "single-end", "paired-end", "paired-end" ) )
 
-#This dataset contains RNA-Seq counts for RNAi treated vs untreated cells, as well as sequencing data
-#using both single-end sequencing (reading fragments from only one end to the other) and paired-end 
-#sequencing (reading form both ends).
+
 
 pairedSamples = pasillaDesign$libType == "paired-end"
 countTable = count.table[ , pairedSamples ]

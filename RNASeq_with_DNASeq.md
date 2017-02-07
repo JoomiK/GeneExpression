@@ -11,7 +11,7 @@ Install `gplots`, `RColorBrewer` and Bioconductor packages `DESeq` and `pasilla`
 #### The Workflow
 Much of the workflow follows the vignette in this [DESeq manual.](http://bioconductor.org/packages/release/bioc/vignettes/DESeq/inst/doc/DESeq.pdf)
 
-First get the path to the file containing the raw count data. The file countains counts for each gene(row) in each sample (column). Here we're loading the file using read.table and storing as count.table. Header = TRUE if the first row of your file contains the names of variables.
+First get the path to the file containing the raw count data. The file countains counts for each gene(row) in each sample (column). 
 
 
 ```r
@@ -42,13 +42,13 @@ head(count.table)
 ## FBgn0000018      308
 ```
 
-Optional: delete any genes that were never detected (equal to zero in all conditions).
+Optional: Delete any genes that were never detected (equal to zero in all conditions).
 
 ```r
 count.table <- count.table[rowSums(count.table) > 0,]
 ```
 
-Metadata- Columns will be condition or libType. Rows correspond to the 7 (untreated or treated) samples.
+Metadata: Columns will be condition or libType (library type), rows correspond to the 7 (untreated or treated) samples.
 
 ```r
 pasillaDesign = data.frame(
@@ -59,7 +59,7 @@ pasillaDesign = data.frame(
                "paired-end", "single-end", "paired-end", "paired-end" ) )
 ```
 
-This dataset contains RNA-Seq counts for RNAi treated vs untreated cells, as well as sequencing data using both single-end sequencing (reading fragments from only one end to the other) and paired-end sequencing (reading form both ends).
+This dataset contains RNA-Seq counts for RNAi treated vs untreated cells, as well as sequencing data using both single-end sequencing (reading fragments from only one end to the other) and paired-end sequencing (reading from both ends).
 
 ```r
 pairedSamples = pasillaDesign$libType == "paired-end"
@@ -118,7 +118,7 @@ With DESeq, differential gene expression is approximated by a negative binomial 
 cds = estimateDispersions( cds )
 ```
 
-Plotting dispersion estimates. The level of dispersion is related to the biological dispersion in each treatment.The more variation, the bigger the difference between counts between treatments is required before the differences become significant.
+The level of dispersion is related to the biological dispersion in each treatment. The more variation, the bigger the difference between counts between treatments is required before the differences become significant. Plot dispersion estimates:
 
 ```r
 plotDispEsts( cds )
@@ -126,8 +126,9 @@ plotDispEsts( cds )
 ![dispersion](https://cloud.githubusercontent.com/assets/16356757/16339197/621b3992-39ef-11e6-89ec-b6eb35f46abe.png)
 
 
-See whether there is differential expression between untreated and treated.
-We need to correct for the fact that we are doing multiple comparison tests. In the case of gene expression data, it's typical to control for the FDR by using methods like Benjamini-Hochberg, instead of  the Bonferroni correction, which is too conservative and generally would lead to a lot of false negatives.
+We would to to see whether there is differential expression between untreated and treated.
+
+We need to correct for the fact that we are doing multiple comparison tests. In the case of gene expression data, it's typical to control for the FDR by using methods like Benjamini-Hochberg, instead of the Bonferroni correction, which is too conservative and generally would lead to more false negatives.
 
 Output is a data.frame.
 
@@ -153,7 +154,7 @@ head(res)
 ## 5    -0.26383857 0.2414208 0.8811746
 ## 6    -0.04638999 0.7572819 1.0000000
 ```
-padj is the adjusted p-value (controlled for DFR)
+padj is the adjusted p-value (controlled for FDR).
 To order by pad-j (decreasing):
 
 ```r
@@ -212,7 +213,7 @@ cdsFull = estimateDispersions( cdsFull )
 ```
 
 
-Variance stabilizing transformation, which will be useful for certain applications:
+Variance stabilizing transformation, which will be useful later:
 
 ```r
 cdsBlind = estimateDispersions( cds, method="blind" )
